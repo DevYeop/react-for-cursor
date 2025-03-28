@@ -1,7 +1,12 @@
 import { useAtom } from 'jotai';
 import styled from 'styled-components';
-import { Link, useLocation } from 'react-router-dom';
-import { selectedCategoryAtom, selectedPostAtom, categoriesAtom, fetchCategoriesAtom } from '../store/boardAtoms';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import {
+  selectedCategoryAtom,
+  selectedPostAtom,
+  categoriesAtom,
+  fetchCategoriesAtom,
+} from '../store/boardAtoms';
 import { CategoryType } from '../types/board';
 import { useEffect } from 'react';
 
@@ -71,7 +76,8 @@ const CategoryItem = styled.li<{ isSelected: boolean }>`
   cursor: pointer;
   padding: 0.5rem 1rem;
   border-radius: 4px;
-  background-color: ${(props) => (props.isSelected ? '#007bff' : 'transparent')};
+  background-color: ${(props) =>
+    props.isSelected ? '#007bff' : 'transparent'};
   color: ${(props) => (props.isSelected ? '#ffffff' : '#333333')};
   transition: all 0.3s ease;
 
@@ -85,7 +91,7 @@ export const Navigation = () => {
   const [selectedCategory, setSelectedCategory] = useAtom(selectedCategoryAtom);
   const [, setSelectedPost] = useAtom(selectedPostAtom);
   const [, fetchCategories] = useAtom(fetchCategoriesAtom);
-  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchCategories();
@@ -97,7 +103,7 @@ export const Navigation = () => {
   };
 
   const handleLogin = () => {
-    alert('로그인 기능은 추후 구현 예정입니다.');
+    navigate('/login');
   };
 
   return (
