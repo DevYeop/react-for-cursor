@@ -1,91 +1,82 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAtom } from 'jotai';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { userAtom } from '../store/authAtoms';
-import { authApi } from '../api/auth';
 
 const Container = styled.div`
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
   min-height: 100vh;
-  padding: 2rem;
-  background-color: #f5f5f5;
+  background-color: #074ee8;
+  padding: 20px;
 `;
 
-const Form = styled.form`
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+const LoginBox = styled.div`
+  background-color: white;
+  padding: 40px;
+  border-radius: 16px;
   width: 100%;
   max-width: 400px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
 const Title = styled.h1`
+  font-family: 'Inter', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  color: #000;
+  margin: 0 0 32px 0;
   text-align: center;
-  margin-bottom: 2rem;
-  color: #333;
 `;
 
-const InputGroup = styled.div`
-  margin-bottom: 1rem;
-`;
-
-const Label = styled.label`
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #666;
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 `;
 
 const Input = styled.input`
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
+  padding: 12px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.2s;
 
   &:focus {
     outline: none;
-    border-color: #0066cc;
+    border-color: #074ee8;
   }
 `;
 
 const Button = styled.button`
   width: 100%;
-  padding: 0.75rem;
-  background-color: #0066cc;
+  padding: 12px;
+  background-color: #074ee8;
   color: white;
   border: none;
-  border-radius: 4px;
-  font-size: 1rem;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
-  margin-top: 1rem;
+  transition: opacity 0.2s;
 
   &:hover {
-    background-color: #0052a3;
-  }
-
-  &:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
+    opacity: 0.9;
   }
 `;
 
-const ErrorMessage = styled.div`
-  color: #dc3545;
+const SignupText = styled.p`
   text-align: center;
-  margin-top: 1rem;
-`;
-
-const SignupLink = styled.div`
-  text-align: center;
-  margin-top: 1rem;
+  margin-top: 24px;
+  color: #6b7280;
+  font-size: 14px;
 
   a {
-    color: #0066cc;
+    color: #074ee8;
     text-decoration: none;
+    font-weight: 600;
 
     &:hover {
       text-decoration: underline;
@@ -93,87 +84,72 @@ const SignupLink = styled.div`
   }
 `;
 
-export const Login = () => {
-  const navigate = useNavigate();
-  const [, setUser] = useAtom(userAtom);
+const BackButton = styled(Link)`
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+export function Login() {
   const [formData, setFormData] = useState({
-    username: '',
+    email: '',
     password: '',
   });
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setIsLoading(true);
-
-    try {
-      const response = await authApi.login(formData);
-      console.log('Login response:', response);
-
-      if (response.success) {
-        localStorage.setItem('accessToken', response.token);
-
-        setUser({
-          username: formData.username,
-          email: '',
-          nickname: formData.username,
-        });
-
-        navigate('/');
-      } else {
-        setError(response.message);
-      }
-    } catch (error) {
-      console.error('Login error:', error);
-      setError(
-        error instanceof Error ? error.message : '로그인에 실패했습니다.'
-      );
-    } finally {
-      setIsLoading(false);
-    }
+    // TODO: 로그인 로직 구현
+    console.log('로그인 시도:', formData);
   };
 
   return (
     <Container>
-      <Form onSubmit={handleSubmit}>
+      <BackButton to="/">← 돌아가기</BackButton>
+      <LoginBox>
         <Title>로그인</Title>
-        <InputGroup>
-          <Label htmlFor="username">아이디</Label>
+        <Form onSubmit={handleSubmit}>
           <Input
-            id="username"
-            name="username"
-            type="text"
-            value={formData.username}
+            type="email"
+            name="email"
+            placeholder="이메일"
+            value={formData.email}
             onChange={handleChange}
             required
           />
-        </InputGroup>
-        <InputGroup>
-          <Label htmlFor="password">비밀번호</Label>
           <Input
-            id="password"
-            name="password"
             type="password"
+            name="password"
+            placeholder="비밀번호"
             value={formData.password}
             onChange={handleChange}
             required
           />
-        </InputGroup>
-        <Button type="submit" disabled={isLoading}>
-          {isLoading ? '로그인 중...' : '로그인'}
-        </Button>
-        {error && <ErrorMessage>{error}</ErrorMessage>}
-        <SignupLink>
-          <Link to="/signup">계정이 없으신가요? 회원가입하기</Link>
-        </SignupLink>
-      </Form>
+          <Button type="submit">로그인</Button>
+        </Form>
+        <SignupText>
+          계정이 없으신가요? <Link to="/signup">회원가입</Link>
+        </SignupText>
+      </LoginBox>
     </Container>
   );
-};
+}

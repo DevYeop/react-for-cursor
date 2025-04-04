@@ -8,12 +8,14 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "node server/index.js"
+    "start": "node server/index.js",
+    "setup": "bun install && bun run dev"
   },
   "dependencies": {
     "@types/styled-components": "^5.1.34",
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "figma-developer-mcp": "^0.1.13",
     "jotai": "^2.12.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
